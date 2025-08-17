@@ -4,6 +4,7 @@ import 'package:chat/services/database.dart';
 import 'package:chat/services/shared_pref.dart';
 import 'package:chat/widgets/mybutton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:random_string/random_string.dart';
@@ -46,16 +47,17 @@ class _SignupState extends State<Signup> {
       // For example:
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: _email, password: _password);
+
       final String Id = randomAlphaNumeric(10);
-      String user = _emailController.text.replaceAll("@gmail.com", "");
-      String updateUsername = user.replaceFirst(user[0], user[0].toUpperCase());
-      String firstletter = user.substring(0, 1).toUpperCase();
+      String username = _emailController.text.replaceAll("@gmail.com", "");
+      // String updateUsername = user.replaceFirst(user[0], user[0].toUpperCase());
+      String firstletter = username.substring(0, 1).toUpperCase();
 
       Map<String, dynamic> userinfoMap = {
         'email': _email,
         'Id': Id,
         'name': _nameController.text,
-        'username': updateUsername.toUpperCase(),
+        'username': username,
         'searchkey': firstletter,
         'photoUrl':
             'https://www.gravatar.com/avatar/${_email.hashCode}?d=identicon',
@@ -64,9 +66,7 @@ class _SignupState extends State<Signup> {
       // Save user details to Firestore
       await DatabaseMethod().adduserdetails(userinfoMap, Id);
       await SharedPreferenceHelper().saveUserId(Id);
-      await SharedPreferenceHelper().saveUserName(
-        _emailController.text.replaceAll('@gmail.com', ''),
-      );
+      await SharedPreferenceHelper().saveUserName(username);
       await SharedPreferenceHelper().saveUserEmail(_emailController.text);
       await SharedPreferenceHelper().saveUserPhotoUrl(
         'https://www.gravatar.com/avatar/${_email.hashCode}?d=identicon',
@@ -164,6 +164,8 @@ class _SignupState extends State<Signup> {
     }
   }
 
+  bool obscureText = true; // password hidden by default
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -197,7 +199,7 @@ class _SignupState extends State<Signup> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 80),
+                    padding: const EdgeInsets.only(top: 100),
                     child: Text(
                       'Welcome to GupShup',
                       style: GoogleFonts.oxanium(
@@ -213,7 +215,7 @@ class _SignupState extends State<Signup> {
                     style: GoogleFonts.oxanium(
                       color: Colors.white70,
                       fontSize: 18,
-                      fontWeight: FontWeight.w400,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
@@ -221,7 +223,7 @@ class _SignupState extends State<Signup> {
             ),
             Container(
               margin: EdgeInsets.symmetric(vertical: 180, horizontal: 30),
-              height: MediaQuery.of(context).size.height / 2,
+              height: MediaQuery.of(context).size.height / 1.7,
               width: MediaQuery.of(context).size.width,
 
               decoration: BoxDecoration(
@@ -289,7 +291,7 @@ class _SignupState extends State<Signup> {
                           errorBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.red),
                           ),
-                          constraints: BoxConstraints(maxHeight: 40),
+                          constraints: BoxConstraints(maxHeight: 60),
                         ),
                       ),
                     ),
@@ -329,7 +331,7 @@ class _SignupState extends State<Signup> {
                           errorBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.red),
                           ),
-                          constraints: BoxConstraints(maxHeight: 40),
+                          constraints: BoxConstraints(maxHeight: 60),
                         ),
                       ),
                     ),
@@ -341,6 +343,9 @@ class _SignupState extends State<Signup> {
                         right: 20,
                       ),
                       child: TextFormField(
+                        obscureText: obscureText,
+                        obscuringCharacter: "•",
+
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your password';
@@ -353,6 +358,20 @@ class _SignupState extends State<Signup> {
                           labelStyle: TextStyle(
                             color: Colors.grey.shade600,
                             fontSize: 14,
+                          ),
+                          suffixIcon: GestureDetector(
+                            child: Icon(
+                              obscureText
+                                  ? CupertinoIcons.eye_slash
+                                  : Icons.remove_red_eye,
+                              size: 18,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            onTap: () {
+                              setState(() {
+                                obscureText = !obscureText;
+                              });
+                            },
                           ),
                           prefixIcon: Icon(
                             Icons.lock,
@@ -372,7 +391,7 @@ class _SignupState extends State<Signup> {
                           errorBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.red),
                           ),
-                          constraints: BoxConstraints(maxHeight: 40),
+                          constraints: BoxConstraints(maxHeight: 60),
                         ),
                       ),
                     ),
@@ -383,6 +402,8 @@ class _SignupState extends State<Signup> {
                         right: 20,
                       ),
                       child: TextFormField(
+                        obscureText: obscureText,
+                        obscuringCharacter: "•",
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please confirm your password';
@@ -399,6 +420,20 @@ class _SignupState extends State<Signup> {
                             color: Colors.grey.shade600,
                             fontSize: 14,
                           ),
+                          suffixIcon: GestureDetector(
+                            child: Icon(
+                              obscureText
+                                  ? CupertinoIcons.eye_slash
+                                  : Icons.remove_red_eye,
+                              size: 18,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            onTap: () {
+                              setState(() {
+                                obscureText = !obscureText;
+                              });
+                            },
+                          ),
                           prefixIcon: Icon(
                             Icons.lock,
                             size: 16,
@@ -417,7 +452,7 @@ class _SignupState extends State<Signup> {
                           errorBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.red),
                           ),
-                          constraints: BoxConstraints(maxHeight: 40),
+                          constraints: BoxConstraints(maxHeight: 60),
                         ),
                       ),
                     ),
@@ -450,7 +485,7 @@ class _SignupState extends State<Signup> {
               ),
             ),
             Positioned(
-              bottom: 100,
+              bottom: 120,
               left: 30,
               right: 30,
               child: Row(
@@ -460,7 +495,7 @@ class _SignupState extends State<Signup> {
                     "Already have an account?",
                     style: GoogleFonts.oxanium(
                       letterSpacing: 1,
-                      color: Colors.grey.shade700,
+                      color: Colors.black,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
@@ -471,7 +506,7 @@ class _SignupState extends State<Signup> {
                       "Login",
                       style: GoogleFonts.oxanium(
                         color: Theme.of(context).colorScheme.primary,
-                        fontSize: 16,
+                        fontSize: 17,
                         fontWeight: FontWeight.w800,
                       ),
                     ),

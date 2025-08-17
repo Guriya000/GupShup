@@ -17,14 +17,14 @@ class SharedPreferenceHelper {
     return prefs.getString(usedIdkey);
   }
 
-  Future<bool> saveUserName(String userName) async {
+  Future<bool> saveUserName(String username) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setString(userNameKey, userName);
+    return prefs.setString("USERNAMEKEY", username);
   }
 
   Future<String?> getUserName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(userNameKey);
+    return prefs.getString("USERNAMEKEY");
   }
 
   Future<bool> saveUserEmail(String userEmail) async {
@@ -55,5 +55,10 @@ class SharedPreferenceHelper {
   Future<String?> getDisplayName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(displayNameKey);
+  }
+
+  Future<bool> clearSharedPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.clear();
   }
 }

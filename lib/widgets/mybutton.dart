@@ -15,7 +15,7 @@ class MyButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        height: 40,
+        height: 50,
         width: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -30,9 +30,11 @@ class MyButton extends StatelessWidget {
         child: Center(
           child: Text(
             buttonname,
+
             style: GoogleFonts.oxanium(
+              letterSpacing: 1,
               color: Colors.white,
-              fontSize: 18,
+              fontSize: 20,
               fontWeight: FontWeight.w800,
             ),
           ),

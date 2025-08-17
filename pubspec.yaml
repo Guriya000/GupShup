@@ -40,6 +40,10 @@ dependencies:
   cloud_firestore: ^5.6.12
   random_string: ^2.3.1
   shared_preferences: ^2.5.3
+  get: ^4.7.2
+  intl: ^0.20.2
+  stylish_bottom_bar: ^1.1.1
+  firebase_messaging: ^15.2.10
 
 dev_dependencies:
   flutter_test:

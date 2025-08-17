@@ -10,8 +10,8 @@ class AppName extends StatelessWidget {
       'GupShup',
       style: GoogleFonts.oxanium(
         letterSpacing: 1,
-        color: Colors.white,
-        fontSize: 40,
+        color: Theme.of(context).primaryColor,
+        fontSize: 35,
         fontWeight: FontWeight.bold,
       ),
     );

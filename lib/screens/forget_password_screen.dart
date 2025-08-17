@@ -17,38 +17,57 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
   final _formkey = GlobalKey<FormState>();
 
   // function for sending email
+  // resetpassword() async {
+  //   try {
+  //     await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         backgroundColor: Theme.of(context).primaryColor,
+  //         content: Text(
+  //           "Password reset e-mail has been sent.",
+  //           style: GoogleFonts.oxanium(
+  //             color: Colors.white,
+  //             fontWeight: FontWeight.w500,
+  //             fontSize: 14,
+  //           ),
+  //         ),
+  //       ),
+  //     );
+  //   } on FirebaseException catch (e) {
+  //     if (e.code == "user-not-found") {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(
+  //           backgroundColor: Theme.of(context).primaryColor,
+  //           content: Text(
+  //             "User not found.",
+  //             style: GoogleFonts.oxanium(
+  //               color: Colors.white,
+  //               fontWeight: FontWeight.w500,
+  //               fontSize: 14,
+  //             ),
+  //           ),
+  //         ),
+  //       );
+  //     }
+  //   }
+  // }
+
   resetpassword() async {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Password reset email sent!")));
+    } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: Theme.of(context).primaryColor,
-          content: Text(
-            "Password reset e-mail has been sent.",
-            style: GoogleFonts.oxanium(
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-            ),
-          ),
+          content: Text("Error: ${e.code}"), // Log ALL error codes
         ),
       );
-    } on FirebaseException catch (e) {
-      if (e.code == "user-not-found") {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Theme.of(context).primaryColor,
-            content: Text(
-              "User not found.",
-              style: GoogleFonts.oxanium(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-              ),
-            ),
-          ),
-        );
-      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Unexpected error: $e")));
     }
   }
 
@@ -85,7 +104,15 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                     SizedBox(height: 20),
                     Column(
                       children: [
-                        AppName(),
+                        Text(
+                          'GupShup',
+                          style: GoogleFonts.oxanium(
+                            letterSpacing: 2,
+                            color: Colors.white,
+                            fontSize: 28,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                         SizedBox(height: 18),
                         Text(
                           'Reset Your Password',

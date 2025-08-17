@@ -7,6 +7,7 @@ import 'package:chat/widgets/mybutton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -122,6 +123,10 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  bool obscureText = true;
+
+  /// password hidden by default
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Column(
                       children: [
                         Text(
-                          'Welcome to GupShup',
+                          'Glad to see you again!',
                           style: GoogleFonts.oxanium(
                             color: Colors.white,
                             fontSize: 28,
@@ -168,6 +173,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           style: GoogleFonts.oxanium(
                             color: Colors.white70,
                             fontSize: 18,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
@@ -179,7 +185,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             Container(
               margin: EdgeInsets.symmetric(vertical: 180, horizontal: 30),
-              height: MediaQuery.of(context).size.height / 2.8,
+              height: MediaQuery.of(context).size.height / 2.5,
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -193,7 +199,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
               child: Padding(
-                padding: const EdgeInsets.only(top: 10, right: 20, left: 20),
+                padding: const EdgeInsets.only(right: 20, left: 20),
+
                 child: Form(
                   key: _formkey,
                   child: Column(
@@ -216,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                           prefixIcon: Icon(
                             Icons.email,
-                            size: 16,
+                            size: 18,
                             color: Theme.of(context).colorScheme.primary,
                           ),
                           border: OutlineInputBorder(),
@@ -227,16 +234,21 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade400),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
                           ),
                           errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.red),
+                            borderSide: BorderSide(
+                              color: Theme.of(context).primaryColor,
+                            ),
                           ),
-                          constraints: BoxConstraints(maxHeight: 40),
+                          constraints: BoxConstraints(maxHeight: 60),
                         ),
                       ),
-                      SizedBox(height: 15),
+                      SizedBox(height: 20),
+
                       TextFormField(
+                        obscureText: obscureText,
+                        obscuringCharacter: "•",
                         controller: passwordController,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -250,10 +262,25 @@ class _LoginScreenState extends State<LoginScreen> {
                             color: Colors.grey.shade600,
                             fontSize: 14,
                           ),
+                          suffixIcon: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                obscureText = !obscureText;
+                              });
+                            },
+                            child: Icon(
+                              obscureText
+                                  ? CupertinoIcons.eye_slash
+                                  : Icons.remove_red_eye,
+
+                              size: 18,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
 
                           prefixIcon: Icon(
-                            Icons.password,
-                            size: 16,
+                            Icons.lock,
+                            size: 18,
                             color: Theme.of(context).colorScheme.primary,
                           ),
                           border: OutlineInputBorder(),
@@ -264,30 +291,35 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade400),
+                            borderSide: BorderSide(color: Colors.grey.shade500),
                           ),
                           errorBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.red),
+                            borderSide: BorderSide(
+                              color: Theme.of(context).primaryColor,
+                            ),
                           ),
-                          constraints: BoxConstraints(maxHeight: 40),
+                          constraints: BoxConstraints(maxHeight: 60),
                         ),
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 15),
                       Row(
                         children: [
                           Text(
                             "Forgot Password?",
                             style: GoogleFonts.oxanium(
-                              color: Colors.grey.shade600,
-                              fontSize: 14,
+                              color: Colors.black,
+                              fontSize: 16,
                             ),
                           ),
+                          SizedBox(width: 5),
                           GestureDetector(
                             child: Text(
-                              "Reset it",
+                              "Reset",
                               style: GoogleFonts.oxanium(
-                                color: Theme.of(context).colorScheme.secondary,
-                                fontSize: 14,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onPrimaryFixed,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -312,6 +344,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (_formkey.currentState!.validate()) {
                             if (email.isNotEmpty && password.isNotEmpty) {
                               await userlogin();
+                              await SharedPreferenceHelper().saveUserName(
+                                username,
+                              ); // Ensure this runs!
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   backgroundColor: Theme.of(
@@ -321,7 +356,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     "Logged in successfully",
                                     style: GoogleFonts.oxanium(
                                       color: Colors.white,
-                                      fontSize: 14,
+                                      fontSize: 16,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -364,8 +399,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     "Don't have an account?",
                     style: GoogleFonts.oxanium(
                       letterSpacing: 1,
-                      color: Colors.grey.shade600,
+                      color: Colors.black,
                       fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   GestureDetector(
@@ -373,7 +409,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       " Sign Up",
                       style: GoogleFonts.oxanium(
                         color: Theme.of(context).colorScheme.primary,
-                        fontSize: 16,
+                        fontSize: 17,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
